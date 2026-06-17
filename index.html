@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Applied AI Engineer — Cryptio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #2EE89A;
+      --black: #0A0A0A;
+      --dark-2: #1A1A1A;
+      --gray: #888;
+      --border: rgba(255,255,255,0.08);
+      --white: #fff;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* TICKER */
+    .ticker-bar {
+      background: rgba(255,255,255,0.025);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      position: relative;
+    }
+
+    .ticker-track {
+      display: inline-flex;
+      gap: 0;
+      animation: ticker-scroll 32s linear infinite;
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 28px;
+      border-right: 1px solid var(--border);
+    }
+
+    .ticker-symbol { font-weight: 700; color: rgba(255,255,255,0.55); font-size: 11px; }
+    .ticker-price { color: rgba(255,255,255,0.8); font-weight: 600; }
+    .ticker-change { font-size: 11px; font-weight: 700; }
+    .ticker-change.up { color: var(--green); }
+    .ticker-change.dn { color: #FF5C5C; }
+
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* HERO CANVAS */
+    #chart-bg {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    /* FLOATING TRADE CARDS */
+    .trade-feed {
+      position: absolute;
+      right: 48px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 8px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .trade-card {
+      background: rgba(26,26,26,0.85);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      min-width: 170px;
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .trade-card.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .trade-card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .trade-pair { font-weight: 800; color: rgba(255,255,255,0.7); font-size: 12px; }
+    .trade-side { font-weight: 700; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+    .trade-side.buy { background: rgba(46,232,154,0.15); color: var(--green); }
+    .trade-side.sell { background: rgba(255,92,92,0.12); color: #FF5C5C; }
+
+    .trade-row { display: flex; justify-content: space-between; color: var(--gray); }
+    .trade-val { color: rgba(255,255,255,0.6); }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+    .logo-mark {
+      width: 28px; height: 28px;
+      background: var(--green);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .logo-mark svg { width: 14px; height: 14px; }
+    .logo-name { font-size: 16px; font-weight: 700; color: var(--white); }
+
+    .nav-role {
+      font-size: 12px; font-weight: 600; color: var(--green);
+      background: rgba(46,232,154,0.1);
+      border: 1px solid rgba(46,232,154,0.25);
+      padding: 5px 13px; border-radius: 100px;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 64px 48px 56px;
+      text-align: center;
+      display: flex; flex-direction: column; align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(46,232,154,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 700; color: var(--green);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: 18px; position: relative;
+    }
+
+    .dot {
+      width: 6px; height: 6px; background: var(--green);
+      border-radius: 50%; animation: blink 2s infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-size: clamp(34px, 4.5vw, 52px);
+      font-weight: 800; letter-spacing: -2px; line-height: 1.07;
+      margin-bottom: 16px; position: relative;
+    }
+
+    .hero h1 em { color: var(--green); font-style: normal; }
+
+    .hero p {
+      font-size: 16px; color: var(--gray);
+      max-width: 520px; line-height: 1.75;
+      margin-bottom: 28px; position: relative;
+    }
+
+    .clients {
+      display: flex; flex-wrap: wrap; gap: 7px;
+      align-items: center; justify-content: center;
+      position: relative;
+    }
+
+    .clients-label { font-size: 11px; color: var(--gray); margin-right: 3px; }
+
+    .client-tag {
+      font-size: 11px; font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 3px 10px; border-radius: 5px;
+    }
+
+    /* TWO-COLUMN LAYOUT */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .col {
+      display: flex; flex-direction: column;
+    }
+
+    .col:first-child { border-right: 1px solid var(--border); }
+
+    /* SECTION PANELS */
+    .panel {
+      padding: 40px 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .col:first-child .panel:last-child,
+    .col:last-child .panel:last-child {
+      border-bottom: none;
+      flex: 1;
+    }
+
+    .panel-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--green); margin-bottom: 5px;
+    }
+
+    .panel h2 {
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.6px; margin-bottom: 24px;
+    }
+
+    /* CARDS */
+    .card-stack {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .card h3 {
+      font-size: 13px; font-weight: 700;
+      margin-bottom: 5px; letter-spacing: -0.1px;
+    }
+
+    .card p {
+      font-size: 12px; color: var(--gray); line-height: 1.6;
+    }
+
+    /* TESTIMONIALS */
+    .testimonial {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .testimonial-quote {
+      font-size: 12px; color: rgba(255,255,255,0.7);
+      line-height: 1.7; font-style: italic;
+      position: relative; padding-left: 14px;
+    }
+
+    .testimonial-quote::before {
+      content: '';
+      position: absolute; left: 0; top: 3px; bottom: 3px;
+      width: 2px; background: var(--green);
+      border-radius: 2px; opacity: 0.5;
+    }
+
+    .testimonial-author {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .t-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(46,232,154,0.1);
+      border: 1px solid rgba(46,232,154,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; color: var(--green);
+      flex-shrink: 0; letter-spacing: 0.3px;
+    }
+
+    .t-name { font-size: 12px; font-weight: 700; }
+    .t-role { font-size: 11px; color: var(--gray); margin-top: 1px; }
+
+    /* TECH TAGS */
+    .tech-tags {
+      display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px;
+    }
+
+    .tag {
+      font-size: 11px; font-weight: 600;
+      font-family: 'Courier New', monospace;
+      background: var(--dark-2); border: 1px solid var(--border);
+      color: rgba(255,255,255,0.55);
+      padding: 4px 10px; border-radius: 5px;
+    }
+
+    .tag.green {
+      color: var(--green);
+      background: rgba(46,232,154,0.07);
+      border-color: rgba(46,232,154,0.2);
+    }
+
+    .tech-note { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+    /* INTERVIEW STEPS */
+    .steps { display: flex; flex-direction: column; }
+
+    .step {
+      display: grid; grid-template-columns: 40px 1fr;
+      gap: 14px; position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: ''; position: absolute;
+      left: 19px; top: 40px; bottom: 0;
+      width: 1px; background: var(--border);
+    }
+
+    .step-num {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--dark-2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: var(--gray);
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+
+    .step-num.final {
+      background: rgba(46,232,154,0.1);
+      border-color: rgba(46,232,154,0.3); font-size: 16px;
+    }
+
+    .step-body { padding: 8px 0 28px; }
+    .step-body:last-child { padding-bottom: 0; }
+
+    .step-body h4 {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: -0.1px; margin-bottom: 2px;
+    }
+
+    .step-meta {
+      display: block; font-size: 11px; font-weight: 600;
+      color: var(--green); margin-bottom: 4px;
+    }
+
+    .step-body p { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+    /* BENEFITS — full width */
+    .benefits-section {
+      padding: 40px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .benefits-section .panel-label { margin-bottom: 5px; }
+    .benefits-section h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.6px; margin-bottom: 24px; }
+
+    .benefits-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .benefit {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+    }
+
+    .benefit-icon { font-size: 16px; margin-bottom: 8px; display: block; }
+    .benefit h4 { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+    .benefit p { font-size: 11px; color: var(--gray); line-height: 1.4; }
+
+    .benefits-split {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+
+    .benefits-col {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+
+    .benefits-col-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 18px; border-bottom: 1px solid var(--border);
+      font-size: 12px; font-weight: 700;
+    }
+
+    .benefits-col-header .flag { font-size: 16px; }
+
+    .col-benefit {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 10px 18px;
+    }
+
+    .col-benefit-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .col-benefit-text h4 { font-size: 12px; font-weight: 700; margin-bottom: 1px; }
+    .col-benefit-text p { font-size: 11px; color: var(--gray); line-height: 1.4; }
+
+    /* CTA */
+    .cta-section {
+      padding: 60px 48px; text-align: center;
+    }
+
+    .cta-inner { max-width: 480px; margin: 0 auto; }
+
+    .cta-inner h2 {
+      font-size: 32px; font-weight: 800;
+      letter-spacing: -1px; margin-bottom: 12px;
+    }
+
+    .cta-inner p {
+      font-size: 14px; color: var(--gray);
+      margin-bottom: 28px; line-height: 1.7;
+    }
+
+    .btn {
+      display: inline-block; background: var(--green);
+      color: var(--black); font-weight: 700; font-size: 14px;
+      padding: 12px 24px; border-radius: 8px;
+      text-decoration: none; transition: opacity 0.15s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+
+    .cta-or { font-size: 12px; color: var(--gray); margin: 14px 0 4px; }
+
+    .cta-email {
+      font-size: 13px; font-weight: 600;
+      color: var(--green); text-decoration: none;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    footer p { font-size: 12px; color: var(--gray); }
+    footer a { color: var(--green); text-decoration: none; }
+
+    @media (max-width: 800px) {
+      nav, .hero, .benefits-section, .cta-section, footer { padding-left: 20px; padding-right: 20px; }
+      .two-col { grid-template-columns: 1fr; }
+      .col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+      .benefits-row { grid-template-columns: 1fr 1fr 1fr; }
+      .panel { padding: 32px 20px; }
+    }
+
+    /* PERSONALISATION BANNER */
+    .hello-bar {
+      background: rgba(46,232,154,0.08);
+      border-bottom: 1px solid rgba(46,232,154,0.2);
+      padding: 12px 48px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.01em;
+    }
+    .hello-bar strong {
+      color: var(--green);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="https://cryptio.co" target="_blank">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20" fill="none">
+        <polygon points="10,2 18,6.5 18,13.5 10,18 2,13.5 2,6.5" fill="#0A0A0A"/>
+        <polygon points="10,6 14,8.5 14,13 10,15.5 6,13 6,8.5" fill="#0A0A0A" opacity="0.4"/>
+      </svg>
+    </div>
+    <span class="logo-name">Cryptio</span>
+  </a>
+  <span class="nav-role">Applied AI Engineer · Remote · Canada</span>
+</nav>
+
+<!-- PERSONALISATION BANNER -->
+<div class="hello-bar" id="hello-bar" style="display:none">
+  <span id="hello-text"></span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <canvas id="chart-bg"></canvas>
+
+  <div class="hero-eyebrow"><span class="dot"></span>Now hiring · Remote · Canada</div>
+  <h1>The first <em>AI engineer</em><br />at Cryptio</h1>
+  <p>We're hiring our first Applied AI Engineer to build net-new Advisory Intelligence tooling — full-stack ownership from Postgres schema to React UI, working directly with the VP on prompt architecture and product roadmap. Series B · $45M raised.</p>
+  <div class="clients">
+    <span class="clients-label">Trusted by</span>
+    <span class="client-tag">Circle</span>
+    <span class="client-tag">Gemini</span>
+    <span class="client-tag">Uniswap</span>
+    <span class="client-tag">Paxos</span>
+    <span class="client-tag">Consensys</span>
+    <span class="client-tag">Nomura</span>
+    <span class="client-tag">GSR</span>
+  </div>
+</div>
+
+<!-- ROW 1: WHY JOIN + THE WORK -->
+<div class="two-col">
+  <div class="col">
+    <div class="panel" style="flex:1">
+      <p class="panel-label">Why Cryptio</p>
+      <h2>Why this role, why now</h2>
+      <div class="card-stack">
+        <div class="card">
+          <h3>You're the first — greenfield from day one</h3>
+          <p>This is a net-new function. No existing AI codebase to inherit, no backlog of someone else's decisions. You'll set the architecture, tooling, and standards for Applied AI at Cryptio.</p>
+        </div>
+        <div class="card">
+          <h3>Direct line to the VP and product roadmap</h3>
+          <p>You work alongside the VP of Advisory Intelligence. Not as an implementer — as someone who shapes what gets built. Your input on what to ship is expected and acted on.</p>
+        </div>
+        <div class="card">
+          <h3>Series B momentum — $45M raised</h3>
+          <p>We just closed a $45M Series B. Trusted by Circle, Gemini, Uniswap, Nomura, GSR, and 400+ institutions. The credibility is there — now we're scaling the intelligence layer.</p>
+        </div>
+        <div class="card">
+          <h3>Grow into technical leadership</h3>
+          <p>The team is small on purpose. As the Advisory Intelligence practice scales, the right person grows into the technical leader for the function. That runway is real and explicit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel" style="flex:1">
+      <p class="panel-label">The Work</p>
+      <h2>What you'd actually be doing</h2>
+      <div class="card-stack">
+        <div class="card">
+          <h3>Build the Advisory Intelligence toolkit</h3>
+          <p>The toolkit covers the full accounting workflow — transaction-level close, chart of accounts benchmarking, policy generation, fit-gap analysis, and financial reporting outputs. Each tool combines deterministic logic with AI layers drawing on real client engagements.</p>
+        </div>
+        <div class="card">
+          <h3>Own full-stack feature delivery</h3>
+          <p>From Postgres schema through API layer through React UI — no handoffs. You design the data model, build the backend pipeline, and ship the interface. All of it is yours.</p>
+        </div>
+        <div class="card">
+          <h3>Architect multi-step AI pipelines</h3>
+          <p>Prompt chaining, structured output parsing, confidence scoring, failure recovery, audit-trail logging. You'll also build and extend the deterministic pre-processing layers that make AI output reliable enough for audit.</p>
+        </div>
+        <div class="card">
+          <h3>Financial document ingestion</h3>
+          <p>Parse uploaded spreadsheets and structured ERP reports into typed data models for downstream AI processing. Finance practitioners will use this daily — correctness isn't optional.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROW 2: TESTIMONIALS + TECH + PROCESS -->
+<div class="two-col">
+  <div class="col">
+    <div class="panel" style="flex:1">
+      <p class="panel-label">From the team</p>
+      <h2>What engineers say</h2>
+      <div class="card-stack">
+        <div class="testimonial">
+          <p class="testimonial-quote">"I'd worked at a couple of AI startups before Cryptio but this is the first place where the AI work is actually consequential. The outputs feed into real audits at real institutions. Getting it wrong has financial consequences — which sounds scary but makes the engineering genuinely interesting."</p>
+          <div class="testimonial-author">
+            <div class="t-avatar">DM</div>
+            <div>
+              <div class="t-name">Daniel Marsh</div>
+              <div class="t-role">Staff Engineer, Delivery · 2 years</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <p class="testimonial-quote">"The autonomy is real. Within three months I had full ownership of a core data pipeline — schema, API, and the AI layer. No committee, no waiting for sign-off. You scope it, you ship it, you own what happens next."</p>
+          <div class="testimonial-author">
+            <div class="t-avatar">AL</div>
+            <div>
+              <div class="t-name">Amara Lejeune</div>
+              <div class="t-role">Senior Full-Stack Engineer · 1.5 years</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <p class="testimonial-quote">"Coming from a pure backend background I was unsure about owning the full stack. Turned out it's the best part. Seeing a workflow go from a Postgres migration to a UI a finance team uses daily — that feedback loop is hard to give up."</p>
+          <div class="testimonial-author">
+            <div class="t-avatar">TN</div>
+            <div>
+              <div class="t-name">Tom Nakamura</div>
+              <div class="t-role">Engineer, Advisory Intelligence · 1 year</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">
+      <p class="panel-label">The Stack</p>
+      <h2>What you'll work with</h2>
+      <div class="tech-tags">
+        <span class="tag green">TypeScript</span>
+        <span class="tag green">Node.js</span>
+        <span class="tag green">React</span>
+        <span class="tag green">Postgres</span>
+        <span class="tag green">AWS Bedrock</span>
+        <span class="tag green">Anthropic SDK</span>
+        <span class="tag">Next.js</span>
+        <span class="tag">Zustand</span>
+        <span class="tag">Zod</span>
+        <span class="tag">BullMQ</span>
+        <span class="tag">Docker</span>
+        <span class="tag">AWS</span>
+        <span class="tag">CI/CD</span>
+      </div>
+      <p class="tech-note">Full-stack ownership from schema to UI. AI is central to the work, not bolted on. SOC 1 &amp; 2 certified, audited by PwC.</p>
+    </div>
+    <div class="panel">
+      <p class="panel-label">The Process</p>
+      <h2>Four steps, no surprises</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Talent Screen</h4>
+            <span class="step-meta">45 min · Jamie, Talent</span>
+            <p>Intro call — your background, what excites you, mutual fit.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Technical Interview</h4>
+            <span class="step-meta">90 min · Tech Lead</span>
+            <p>Real-world problem solving. No trick questions, just scenarios that reflect the actual work.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Team Interview</h4>
+            <span class="step-meta">45 min · PM + Engineer</span>
+            <p>How you collaborate, approach ambiguity, and contribute to a high-functioning team.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Culture Interview</h4>
+            <span class="step-meta">45 min · Fem, VP of People</span>
+            <p>A two-way conversation. As much for you to ask questions as for us.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num final">🎉</div>
+          <div class="step-body">
+            <h4>Offer</h4>
+            <span class="step-meta">Fast turnaround</span>
+            <p>Expect to hear back within days of your final stage.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BENEFITS — full width -->
+<div class="benefits-section">
+  <p class="panel-label">Benefits</p>
+  <h2>What you get</h2>
+  <div class="benefits-row">
+    <div class="benefit">
+      <span class="benefit-icon">🌍</span>
+      <h4>Remote or hybrid</h4>
+      <p>Your choice — fully remote, hybrid, or office.</p>
+    </div>
+    <div class="benefit">
+      <span class="benefit-icon">🏖️</span>
+      <h4>25 days + birthday</h4>
+      <p>Plus bank holidays. +1 day/year up to 30.</p>
+    </div>
+    <div class="benefit">
+      <span class="benefit-icon">💻</span>
+      <h4>MacBook Pro</h4>
+      <p>Plus $200 home office setup budget.</p>
+    </div>
+    <div class="benefit">
+      <span class="benefit-icon">🎓</span>
+      <h4>L&amp;D budget</h4>
+      <p>Training, courses, development.</p>
+    </div>
+    <div class="benefit">
+      <span class="benefit-icon">💪</span>
+      <h4>Wellness budget</h4>
+      <p>Fitness, mental health &amp; coaching.</p>
+    </div>
+    <div class="benefit">
+      <span class="benefit-icon">📈</span>
+      <h4>Equity options</h4>
+      <p>Share in the upside as we scale.</p>
+    </div>
+  </div>
+  <div class="benefits-split">
+    <div class="benefits-col">
+      <div class="benefits-col-header"><span class="flag">🇬🇧</span> UK-based employees</div>
+      <div class="col-benefit">
+        <span class="col-benefit-icon">🏦</span>
+        <div class="col-benefit-text"><h4>4% pension</h4><p>Via Smart Pension</p></div>
+      </div>
+      <div class="col-benefit">
+        <span class="col-benefit-icon">🏥</span>
+        <div class="col-benefit-text"><h4>Private medical</h4><p>Via Allianz</p></div>
+      </div>
+      <div class="col-benefit">
+        <span class="col-benefit-icon">🦷</span>
+        <div class="col-benefit-text"><h4>Private dental</h4><p>Via Allianz</p></div>
+      </div>
+    </div>
+    <div class="benefits-col">
+      <div class="benefits-col-header"><span class="flag">🇺🇸</span> US-based employees</div>
+      <div class="col-benefit">
+        <span class="col-benefit-icon">🏦</span>
+        <div class="col-benefit-text"><h4>4% 401K match</h4><p>Employer contribution match</p></div>
+      </div>
+      <div class="col-benefit">
+        <span class="col-benefit-icon">🏥</span>
+        <div class="col-benefit-text"><h4>Health insurance</h4><p>Via ICHRA</p></div>
+      </div>
+      <div class="col-benefit">
+        <span class="col-benefit-icon">🦷</span>
+        <div class="col-benefit-text"><h4>Dental &amp; vision</h4><p>Via Guardian</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <h2>Interested?</h2>
+    <p>If building production AI systems for institutional finance sounds like your kind of problem, reach out — I'd love to tell you more.</p>
+    <a href="mailto:jamie.crowley@cryptio.co" class="btn">Get in touch</a>
+    <p class="cta-or">or email directly</p>
+    <a href="mailto:jamie.crowley@cryptio.co" class="cta-email">jamie.crowley@cryptio.co</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20" fill="none">
+        <polygon points="10,2 18,6.5 18,13.5 10,18 2,13.5 2,6.5" fill="#0A0A0A"/>
+      </svg>
+    </div>
+    <span class="logo-name">Cryptio</span>
+  </div>
+  <p>Data transformation &amp; ERP for digital assets · <a href="https://cryptio.co" target="_blank">cryptio.co</a></p>
+</footer>
+
+<script>
+
+// ── CHART CANVAS ────────────────────────────────────────────────────────────
+const canvas = document.getElementById('chart-bg');
+const ctx    = canvas.getContext('2d');
+
+const BAR_COUNT = 72;
+const PAD_X = 0.04;
+const PAD_Y_TOP = 0.12;
+const PAD_Y_BOT = 0.08;
+
+// Generate initial OHLC candles
+function makeCandles(n) {
+  let price = 42000 + Math.random() * 20000;
+  return Array.from({ length: n }, () => {
+    const move  = (Math.random() - 0.48) * price * 0.022;
+    const open  = price;
+    const close = price + move;
+    const wick  = price * 0.012 * Math.random();
+    const high  = Math.max(open, close) + wick;
+    const low   = Math.min(open, close) - wick;
+    price = close;
+    return { open, close, high, low };
+  });
+}
+
+let candles = makeCandles(BAR_COUNT);
+
+function resize() {
+  canvas.width  = canvas.offsetWidth  * window.devicePixelRatio;
+  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+}
+
+function drawChart() {
+  const W = canvas.offsetWidth;
+  const H = canvas.offsetHeight;
+  canvas.width  = W * window.devicePixelRatio;
+  canvas.height = H * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Subtle grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 0.5;
+  for (let r = 0; r <= 5; r++) {
+    const y = H * PAD_Y_TOP + (H * (1 - PAD_Y_TOP - PAD_Y_BOT) / 5) * r;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  for (let c = 0; c <= 8; c++) {
+    const x = (W / 8) * c;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+
+  const prices = candles.flatMap(c => [c.high, c.low]);
+  const minP = Math.min(...prices);
+  const maxP = Math.max(...prices);
+  const range = maxP - minP || 1;
+
+  const chartW = W * (1 - PAD_X * 2);
+  const chartH = H * (1 - PAD_Y_TOP - PAD_Y_BOT);
+  const xStart = W * PAD_X;
+  const yStart = H * PAD_Y_TOP;
+
+  const toY  = v => yStart + chartH - ((v - minP) / range) * chartH;
+  const barW = chartW / BAR_COUNT;
+  const bodyW = Math.max(2, barW * 0.62);
+
+  candles.forEach((c, i) => {
+    const up  = c.close >= c.open;
+    const x   = xStart + i * barW + barW / 2;
+    const bx  = x - bodyW / 2;
+    const top = toY(Math.max(c.open, c.close));
+    const bot = toY(Math.min(c.open, c.close));
+    const bh  = Math.max(1.5, bot - top);
+
+    // Body fill
+    ctx.fillStyle = up ? 'rgba(46,232,154,0.55)' : 'rgba(255,80,80,0.50)';
+    ctx.fillRect(bx, top, bodyW, bh);
+
+    // Body border
+    ctx.strokeStyle = up ? 'rgba(46,232,154,0.9)' : 'rgba(255,80,80,0.85)';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(bx, top, bodyW, bh);
+
+    // Wick
+    ctx.strokeStyle = up ? 'rgba(46,232,154,0.7)' : 'rgba(255,80,80,0.65)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, toY(c.high));
+    ctx.lineTo(x, top);
+    ctx.moveTo(x, bot);
+    ctx.lineTo(x, toY(c.low));
+    ctx.stroke();
+  });
+
+  // Fade left edge so it feels infinite
+  const fade = ctx.createLinearGradient(0, 0, W * 0.08, 0);
+  fade.addColorStop(0, 'rgba(10,10,10,1)');
+  fade.addColorStop(1, 'rgba(10,10,10,0)');
+  ctx.fillStyle = fade;
+  ctx.fillRect(0, 0, W * 0.08, H);
+
+  // Fade right edge (live candle arriving)
+  const fadeR = ctx.createLinearGradient(W * 0.92, 0, W, 0);
+  fadeR.addColorStop(0, 'rgba(10,10,10,0)');
+  fadeR.addColorStop(1, 'rgba(10,10,10,0.7)');
+  ctx.fillStyle = fadeR;
+  ctx.fillRect(W * 0.92, 0, W * 0.08, H);
+}
+
+// Animate — shift candles left, add new one on right
+function advanceCandles() {
+  const last   = candles[candles.length - 1];
+  const move   = (Math.random() - 0.48) * last.close * 0.018;
+  const open   = last.close;
+  const close  = open + move;
+  const wick   = last.close * 0.010 * Math.random();
+  const high   = Math.max(open, close) + wick;
+  const low    = Math.min(open, close) - wick;
+  candles.push({ open, close, high, low });
+  candles.shift();
+}
+
+let lastTime = 0;
+function loop(ts) {
+  if (ts - lastTime > 600) {
+    advanceCandles();
+    lastTime = ts;
+  }
+  drawChart();
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+window.addEventListener('resize', drawChart);
+
+
+// ── FLOATING TRADE CARDS ─────────────────────────────────────────────────────
+const tradePairs = ['BTC/USD','ETH/USD','SOL/USD','ARB/ETH','UNI/USDC','LINK/USD','AVAX/USD','MATIC/USDC'];
+const tradeFeed  = document.getElementById('trade-feed');
+const MAX_CARDS  = 4;
+
+function randomTrade() {
+  const pair = tradePairs[Math.floor(Math.random() * tradePairs.length)];
+  const side = Math.random() > 0.5 ? 'BUY' : 'SELL';
+  const qty  = (Math.random() * 9.8 + 0.2).toFixed(4);
+  const px   = (Math.random() * 60000 + 500).toFixed(2);
+  const notional = (parseFloat(qty) * parseFloat(px)).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  return { pair, side, qty, px, notional };
+}
+
+function addTradeCard() {
+  const t = randomTrade();
+  const card = document.createElement('div');
+  card.className = 'trade-card';
+  card.innerHTML = `
+    <div class="trade-card-header">
+      <span class="trade-pair">${t.pair}</span>
+      <span class="trade-side ${t.side === 'BUY' ? 'buy' : 'sell'}">${t.side}</span>
+    </div>
+    <div class="trade-row"><span>Qty</span><span class="trade-val">${t.qty}</span></div>
+    <div class="trade-row"><span>Price</span><span class="trade-val">$${t.px}</span></div>
+    <div class="trade-row"><span>Value</span><span class="trade-val">$${t.notional}</span></div>`;
+
+  tradeFeed.prepend(card);
+
+  // Fade in
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => card.classList.add('visible'));
+  });
+
+  // Remove oldest if overflow
+  const cards = tradeFeed.querySelectorAll('.trade-card');
+  if (cards.length > MAX_CARDS) {
+    const old = cards[cards.length - 1];
+    old.classList.remove('visible');
+    setTimeout(() => old.remove(), 500);
+  }
+}
+
+// Stagger initial cards
+setTimeout(() => addTradeCard(), 600);
+setTimeout(() => addTradeCard(), 1200);
+setTimeout(() => addTradeCard(), 1800);
+
+// Then keep adding
+setInterval(addTradeCard, 2400);
+</script>
+
+<script>
+  // Personalisation — reads ?name=Alex from URL
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('name');
+    if (name) {
+      const bar = document.getElementById('hello-bar');
+      const text = document.getElementById('hello-text');
+      const safe = name.charAt(0).toUpperCase() + name.slice(1);
+      text.innerHTML = 'Hey <strong>' + safe + '</strong> — Jamie put this together specially for you.';
+      bar.style.display = 'block';
+    }
+  })();
+</script>
+
+</body>
+</html>
