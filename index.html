@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Applied AI Engineer — Cryptio</title>
+  <title>Delivery Operations Analyst at Cryptio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -27,43 +27,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* TICKER */
-    .ticker-bar {
-      background: rgba(255,255,255,0.025);
-      border-bottom: 1px solid var(--border);
-      padding: 8px 0;
-      overflow: hidden;
-      white-space: nowrap;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      position: relative;
-    }
-
-    .ticker-track {
-      display: inline-flex;
-      gap: 0;
-      animation: ticker-scroll 32s linear infinite;
-    }
-
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 28px;
-      border-right: 1px solid var(--border);
-    }
-
-    .ticker-symbol { font-weight: 700; color: rgba(255,255,255,0.55); font-size: 11px; }
-    .ticker-price { color: rgba(255,255,255,0.8); font-weight: 600; }
-    .ticker-change { font-size: 11px; font-weight: 700; }
-    .ticker-change.up { color: var(--green); }
-    .ticker-change.dn { color: #FF5C5C; }
-
-    @keyframes ticker-scroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
     /* HERO CANVAS */
     #chart-bg {
       position: absolute;
@@ -73,8 +36,8 @@
       opacity: 0.35;
     }
 
-    /* FLOATING TRADE CARDS */
-    .trade-feed {
+    /* FLOATING HERO CARDS — theme-specific styles injected below */
+    .hero-feed {
       position: absolute;
       right: 48px; top: 50%;
       transform: translateY(-50%);
@@ -82,38 +45,29 @@
       pointer-events: none;
       z-index: 1;
     }
-
-    .trade-card {
-      background: rgba(26,26,26,0.85);
+    
+    .float-card {
+      background: radial-gradient(circle at 100% 0%, rgba(46,232,154,0.18), transparent 55%), rgba(26,26,26,0.85);
       border: 1px solid var(--border);
       backdrop-filter: blur(8px);
-      border-radius: 10px;
       padding: 10px 14px;
       font-size: 11px;
       font-family: 'Courier New', monospace;
       min-width: 170px;
       opacity: 0;
+      border-radius: 3px 16px 3px 3px;
       transform: translateX(16px);
       transition: opacity 0.4s ease, transform 0.4s ease;
     }
-
-    .trade-card.visible {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .trade-card-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 5px;
-    }
-
+    .float-card.visible { opacity: 1; transform: translateX(0); }
+    .trade-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
     .trade-pair { font-weight: 800; color: rgba(255,255,255,0.7); font-size: 12px; }
     .trade-side { font-weight: 700; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
-    .trade-side.buy { background: rgba(46,232,154,0.15); color: var(--green); }
-    .trade-side.sell { background: rgba(255,92,92,0.12); color: #FF5C5C; }
-
+    .trade-side.buy  { background: rgba(46,232,154,0.15); color: var(--green); }
+    .trade-side.sell { background: rgba(255,92,92,0.12);  color: #FF5C5C; }
     .trade-row { display: flex; justify-content: space-between; color: var(--gray); }
     .trade-val { color: rgba(255,255,255,0.6); }
+
 
     /* NAV */
     nav {
@@ -211,10 +165,7 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .col {
-      display: flex; flex-direction: column;
-    }
-
+    .col { display: flex; flex-direction: column; }
     .col:first-child { border-right: 1px solid var(--border); }
 
     /* SECTION PANELS */
@@ -240,69 +191,28 @@
       letter-spacing: -0.6px; margin-bottom: 24px;
     }
 
-    /* CARDS */
-    .card-stack {
-      display: flex; flex-direction: column; gap: 10px;
-    }
+    /* CARDS - chamfered top-right corner instead of a plain rounded rect */
+    .card-stack { display: flex; flex-direction: column; gap: 12px; }
 
     .card {
-      background: var(--dark-2);
+      background: radial-gradient(circle at 100% 0%, rgba(46,232,154,0.14), transparent 55%), var(--dark-2);
       border: 1px solid var(--border);
-      border-radius: 12px;
       padding: 18px 20px;
+      border-radius: 4px 26px 4px 4px;
+      transition: border-color 0.2s ease;
     }
+
+    .card:hover { border-color: rgba(46,232,154,0.35); }
 
     .card h3 {
       font-size: 13px; font-weight: 700;
       margin-bottom: 5px; letter-spacing: -0.1px;
     }
 
-    .card p {
-      font-size: 12px; color: var(--gray); line-height: 1.6;
-    }
-
-    /* TESTIMONIALS */
-    .testimonial {
-      background: var(--dark-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px 20px;
-      display: flex; flex-direction: column; gap: 14px;
-    }
-
-    .testimonial-quote {
-      font-size: 12px; color: rgba(255,255,255,0.7);
-      line-height: 1.7; font-style: italic;
-      position: relative; padding-left: 14px;
-    }
-
-    .testimonial-quote::before {
-      content: '';
-      position: absolute; left: 0; top: 3px; bottom: 3px;
-      width: 2px; background: var(--green);
-      border-radius: 2px; opacity: 0.5;
-    }
-
-    .testimonial-author {
-      display: flex; align-items: center; gap: 10px;
-    }
-
-    .t-avatar {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: rgba(46,232,154,0.1);
-      border: 1px solid rgba(46,232,154,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 800; color: var(--green);
-      flex-shrink: 0; letter-spacing: 0.3px;
-    }
-
-    .t-name { font-size: 12px; font-weight: 700; }
-    .t-role { font-size: 11px; color: var(--gray); margin-top: 1px; }
+    .card p { font-size: 12px; color: var(--gray); line-height: 1.6; }
 
     /* TECH TAGS */
-    .tech-tags {
-      display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px;
-    }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
 
     .tag {
       font-size: 11px; font-weight: 600;
@@ -318,7 +228,28 @@
       border-color: rgba(46,232,154,0.2);
     }
 
-    .tech-note { font-size: 12px; color: var(--gray); line-height: 1.6; }
+    .stack-groups { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+
+    .stack-group-label {
+      display: block;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 7px;
+    }
+
+    .stack-group .tech-tags { margin-bottom: 0; }
+
+    .tech-callouts { display: flex; flex-direction: column; gap: 10px; }
+
+    .tech-callout {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: radial-gradient(circle at 100% 0%, rgba(46,232,154,0.14), transparent 55%), var(--dark-2);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      border-radius: 4px 20px 4px 4px;
+    }
+
+    .callout-icon { font-size: 18px; flex-shrink: 0; line-height: 1.4; }
+    .tech-callout p { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
 
     /* INTERVIEW STEPS */
     .steps { display: flex; flex-direction: column; }
@@ -362,25 +293,41 @@
 
     .step-body p { font-size: 12px; color: var(--gray); line-height: 1.6; }
 
-    /* BENEFITS — full width */
+    /* BENEFITS */
     .benefits-section {
       padding: 40px 48px;
       border-bottom: 1px solid var(--border);
     }
 
     .benefits-section .panel-label { margin-bottom: 5px; }
-    .benefits-section h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.6px; margin-bottom: 24px; }
+    .benefits-section h2 {
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.6px; margin-bottom: 24px;
+    }
 
     .benefits-row {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 8px 0;
     }
 
     .benefit {
-      background: var(--dark-2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 16px;
+      background: radial-gradient(circle at 100% 0%, rgba(46,232,154,0.16), transparent 55%), var(--dark-2);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      min-width: 128px; max-width: 190px; flex: 0 1 auto;
+      text-align: center;
+      border-radius: 4px 20px 4px 4px;
+      transition: transform 0.2s ease;
+      position: relative; z-index: 1;
+    }
+
+    .benefit:hover {
+      transform: scale(1.25);
+      z-index: 10;
     }
 
     .benefit-icon { font-size: 16px; margin-bottom: 8px; display: block; }
@@ -388,12 +335,26 @@
     .benefit p { font-size: 11px; color: var(--gray); line-height: 1.4; }
 
     .benefits-split {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 0;
     }
 
     .benefits-col {
-      background: var(--dark-2); border: 1px solid var(--border);
-      border-radius: 12px; overflow: hidden;
+      background: radial-gradient(circle at 100% 0%, rgba(46,232,154,0.14), transparent 55%), var(--dark-2);
+      border: 1px solid var(--border);
+      min-width: 220px; flex: 1; max-width: 340px;
+      border-radius: 4px 28px 4px 4px;
+      overflow: hidden;
+      transition: transform 0.2s ease;
+      position: relative; z-index: 1;
+    }
+
+    .benefits-col:hover {
+      transform: scale(1.25);
+      z-index: 10;
     }
 
     .benefits-col-header {
@@ -414,10 +375,7 @@
     .col-benefit-text p { font-size: 11px; color: var(--gray); line-height: 1.4; }
 
     /* CTA */
-    .cta-section {
-      padding: 60px 48px; text-align: center;
-    }
-
+    .cta-section { padding: 60px 48px; text-align: center; }
     .cta-inner { max-width: 480px; margin: 0 auto; }
 
     .cta-inner h2 {
@@ -438,7 +396,6 @@
     }
 
     .btn:hover { opacity: 0.85; }
-
     .cta-or { font-size: 12px; color: var(--gray); margin: 14px 0 4px; }
 
     .cta-email {
@@ -460,22 +417,8 @@
       nav, .hero, .benefits-section, .cta-section, footer { padding-left: 20px; padding-right: 20px; }
       .two-col { grid-template-columns: 1fr; }
       .col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
-      .benefits-row { grid-template-columns: 1fr 1fr 1fr; }
       .panel { padding: 32px 20px; }
-    }
-
-    /* PERSONALISATION BANNER */
-    .hello-bar {
-      background: rgba(46,232,154,0.08);
-      border-bottom: 1px solid rgba(46,232,154,0.2);
-      padding: 12px 48px;
-      font-size: 14px;
-      color: rgba(255,255,255,0.75);
-      letter-spacing: 0.01em;
-    }
-    .hello-bar strong {
-      color: var(--green);
-      font-weight: 600;
+      .hero-feed { display: none; }
     }
   </style>
 </head>
@@ -492,31 +435,18 @@
     </div>
     <span class="logo-name">Cryptio</span>
   </a>
-  <span class="nav-role">Applied AI Engineer · Remote · Canada</span>
+  <span class="nav-role">Delivery Operations Analyst · Remote · New York / Ontario</span>
 </nav>
-
-<!-- PERSONALISATION BANNER -->
-<div class="hello-bar" id="hello-bar" style="display:none">
-  <span id="hello-text"></span>
-</div>
 
 <!-- HERO -->
 <div class="hero">
   <canvas id="chart-bg"></canvas>
+  <div class="hero-feed" id="hero-float"></div>
 
-  <div class="hero-eyebrow"><span class="dot"></span>Now hiring · Remote · Canada</div>
-  <h1>The first <em>AI engineer</em><br />at Cryptio</h1>
-  <p>We're hiring our first Applied AI Engineer to build net-new Advisory Intelligence tooling — full-stack ownership from Postgres schema to React UI, working directly with the VP on prompt architecture and product roadmap. Series B · $45M raised.</p>
-  <div class="clients">
-    <span class="clients-label">Trusted by</span>
-    <span class="client-tag">Circle</span>
-    <span class="client-tag">Gemini</span>
-    <span class="client-tag">Uniswap</span>
-    <span class="client-tag">Paxos</span>
-    <span class="client-tag">Consensys</span>
-    <span class="client-tag">Nomura</span>
-    <span class="client-tag">GSR</span>
-  </div>
+  <div class="hero-eyebrow"><span class="dot"></span>Now hiring · Remote · New York / Ontario</div>
+  <h1 id="hero-headline">The <em>data analyst</em><br />behind Cryptio's client deliveries</h1>
+  <p>Cryptio is the leading financial data platform for digital asset accounting, and clients trust us to get their numbers right. We need a sharp analyst to dig into complex data, drive reconciliations, and keep implementations on track. Series B, $45M raised.</p>
+  
 </div>
 
 <!-- ROW 1: WHY JOIN + THE WORK -->
@@ -526,23 +456,11 @@
       <p class="panel-label">Why Cryptio</p>
       <h2>Why this role, why now</h2>
       <div class="card-stack">
-        <div class="card">
-          <h3>You're the first — greenfield from day one</h3>
-          <p>This is a net-new function. No existing AI codebase to inherit, no backlog of someone else's decisions. You'll set the architecture, tooling, and standards for Applied AI at Cryptio.</p>
-        </div>
-        <div class="card">
-          <h3>Direct line to the VP and product roadmap</h3>
-          <p>You work alongside the VP of Advisory Intelligence. Not as an implementer — as someone who shapes what gets built. Your input on what to ship is expected and acted on.</p>
-        </div>
-        <div class="card">
-          <h3>Series B momentum — $45M raised</h3>
-          <p>We just closed a $45M Series B. Trusted by Circle, Gemini, Uniswap, Nomura, GSR, and 400+ institutions. The credibility is there — now we're scaling the intelligence layer.</p>
-        </div>
-        <div class="card">
-          <h3>Grow into technical leadership</h3>
-          <p>The team is small on purpose. As the Advisory Intelligence practice scales, the right person grows into the technical leader for the function. That runway is real and explicit.</p>
-        </div>
-      </div>
+<div class="card"><h3>Own some of the hardest client puzzles in digital assets</h3><p>You'll work on operationally complex engagements where the data doesn't line up and the answer isn't obvious. Real investigation, not just flagging problems.</p></div>
+<div class="card"><h3>Build infrastructure others will rely on</h3><p>The workflows and process improvements you bring to Delivery and Advisory will be used well beyond your own work.</p></div>
+<div class="card"><h3>Grow into deeper expertise</h3><p>As the team and product evolve, so will your role: more client depth, more advanced analytical work.</p></div>
+<div class="card"><h3>Join right after our $45M Series B</h3><p>Now's a strong time to get in as the Delivery and Advisory teams scale.</p></div>
+</div>
     </div>
   </div>
   <div class="col">
@@ -550,212 +468,87 @@
       <p class="panel-label">The Work</p>
       <h2>What you'd actually be doing</h2>
       <div class="card-stack">
-        <div class="card">
-          <h3>Build the Advisory Intelligence toolkit</h3>
-          <p>The toolkit covers the full accounting workflow — transaction-level close, chart of accounts benchmarking, policy generation, fit-gap analysis, and financial reporting outputs. Each tool combines deterministic logic with AI layers drawing on real client engagements.</p>
-        </div>
-        <div class="card">
-          <h3>Own full-stack feature delivery</h3>
-          <p>From Postgres schema through API layer through React UI — no handoffs. You design the data model, build the backend pipeline, and ship the interface. All of it is yours.</p>
-        </div>
-        <div class="card">
-          <h3>Architect multi-step AI pipelines</h3>
-          <p>Prompt chaining, structured output parsing, confidence scoring, failure recovery, audit-trail logging. You'll also build and extend the deterministic pre-processing layers that make AI output reliable enough for audit.</p>
-        </div>
-        <div class="card">
-          <h3>Financial document ingestion</h3>
-          <p>Parse uploaded spreadsheets and structured ERP reports into typed data models for downstream AI processing. Finance practitioners will use this daily — correctness isn't optional.</p>
-        </div>
-      </div>
+<div class="card"><h3>Lead client data investigations</h3><p>Work directly in external Slack channels during data ingestion, driving investigations, reconciling balances, and resolving missing volume issues alongside the Enterprise Success Consultant.</p></div>
+<div class="card"><h3>Dig into complex datasets</h3><p>Work across large, messy client datasets to find root causes, not just surface the problem, and produce outputs that move things forward.</p></div>
+<div class="card"><h3>Support Core and Broker delivery</h3><p>Act as the specialist resource for data issues, keeping deep context on the clients and datasets you're closest to.</p></div>
+<div class="card"><h3>Put AI tools to work</h3><p>Use AI actively to speed up investigations, automate repetitive tasks, and improve how the team operates.</p></div>
+</div>
     </div>
   </div>
 </div>
 
-<!-- ROW 2: TESTIMONIALS + TECH + PROCESS -->
+<!-- ROW 2: TECH + PROCESS -->
 <div class="two-col">
   <div class="col">
     <div class="panel" style="flex:1">
-      <p class="panel-label">From the team</p>
-      <h2>What engineers say</h2>
-      <div class="card-stack">
-        <div class="testimonial">
-          <p class="testimonial-quote">"I'd worked at a couple of AI startups before Cryptio but this is the first place where the AI work is actually consequential. The outputs feed into real audits at real institutions. Getting it wrong has financial consequences — which sounds scary but makes the engineering genuinely interesting."</p>
-          <div class="testimonial-author">
-            <div class="t-avatar">DM</div>
-            <div>
-              <div class="t-name">Daniel Marsh</div>
-              <div class="t-role">Staff Engineer, Delivery · 2 years</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial">
-          <p class="testimonial-quote">"The autonomy is real. Within three months I had full ownership of a core data pipeline — schema, API, and the AI layer. No committee, no waiting for sign-off. You scope it, you ship it, you own what happens next."</p>
-          <div class="testimonial-author">
-            <div class="t-avatar">AL</div>
-            <div>
-              <div class="t-name">Amara Lejeune</div>
-              <div class="t-role">Senior Full-Stack Engineer · 1.5 years</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial">
-          <p class="testimonial-quote">"Coming from a pure backend background I was unsure about owning the full stack. Turned out it's the best part. Seeing a workflow go from a Postgres migration to a UI a finance team uses daily — that feedback loop is hard to give up."</p>
-          <div class="testimonial-author">
-            <div class="t-avatar">TN</div>
-            <div>
-              <div class="t-name">Tom Nakamura</div>
-              <div class="t-role">Engineer, Advisory Intelligence · 1 year</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <p class="panel-label">The Stack</p>
+      <h2>What you'll work with</h2>
+      <div class="stack-groups">
+<div class="stack-group"><span class="stack-group-label">Core tools</span><div class="tech-tags">
+<span class="tag green">Excel</span>
+<span class="tag">Slack</span>
+<span class="tag green">AI tools</span>
+</div></div>
+<div class="stack-group"><span class="stack-group-label">Data &amp; delivery</span><div class="tech-tags">
+<span class="tag">Reconciliation workflows</span>
+<span class="tag">Data validation</span>
+<span class="tag">Client datasets</span>
+</div></div>
+</div>
+      <div class="tech-callouts">
+<div class="tech-callout"><span class="callout-icon">🔍</span><p>Curiosity matters more than credentials. Background in reconciliation, digital assets, or scripting is a plus, not a requirement.</p></div>
+<div class="tech-callout"><span class="callout-icon">🤖</span><p>AI fluency is core to the role: you'll use it daily to move faster, not as a novelty.</p></div>
+</div>
     </div>
   </div>
   <div class="col">
-    <div class="panel">
-      <p class="panel-label">The Stack</p>
-      <h2>What you'll work with</h2>
-      <div class="tech-tags">
-        <span class="tag green">TypeScript</span>
-        <span class="tag green">Node.js</span>
-        <span class="tag green">React</span>
-        <span class="tag green">Postgres</span>
-        <span class="tag green">AWS Bedrock</span>
-        <span class="tag green">Anthropic SDK</span>
-        <span class="tag">Next.js</span>
-        <span class="tag">Zustand</span>
-        <span class="tag">Zod</span>
-        <span class="tag">BullMQ</span>
-        <span class="tag">Docker</span>
-        <span class="tag">AWS</span>
-        <span class="tag">CI/CD</span>
-      </div>
-      <p class="tech-note">Full-stack ownership from schema to UI. AI is central to the work, not bolted on. SOC 1 &amp; 2 certified, audited by PwC.</p>
-    </div>
-    <div class="panel">
+    <div class="panel" style="flex:1">
       <p class="panel-label">The Process</p>
       <h2>Four steps, no surprises</h2>
       <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <h4>Talent Screen</h4>
-            <span class="step-meta">45 min · Jamie, Talent</span>
-            <p>Intro call — your background, what excites you, mutual fit.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <h4>Technical Interview</h4>
-            <span class="step-meta">90 min · Tech Lead</span>
-            <p>Real-world problem solving. No trick questions, just scenarios that reflect the actual work.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <h4>Team Interview</h4>
-            <span class="step-meta">45 min · PM + Engineer</span>
-            <p>How you collaborate, approach ambiguity, and contribute to a high-functioning team.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
-            <h4>Culture Interview</h4>
-            <span class="step-meta">45 min · Fem, VP of People</span>
-            <p>A two-way conversation. As much for you to ask questions as for us.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num final">🎉</div>
-          <div class="step-body">
-            <h4>Offer</h4>
-            <span class="step-meta">Fast turnaround</span>
-            <p>Expect to hear back within days of your final stage.</p>
-          </div>
-        </div>
-      </div>
+<div class="step"><div class="step-num">1</div><div class="step-body"><h4>Screening Call</h4><span class="step-meta">30 min · Jamie, Talent</span><p>Intro call: your background, what excites you, mutual fit.</p></div></div>
+<div class="step"><div class="step-num">2</div><div class="step-body"><h4>Technical Discussion</h4><span class="step-meta">45 min · Current team member</span><p>A conversation with someone already doing the work. No trick questions.</p></div></div>
+<div class="step"><div class="step-num">3</div><div class="step-body"><h4>Practical Case Study</h4><span class="step-meta">90 min · Analyst + Hiring Manager</span><p>A real-world data problem to work through together, reflecting what you'd actually be doing.</p></div></div>
+<div class="step"><div class="step-num">4</div><div class="step-body"><h4>Culture Interview</h4><span class="step-meta">45 min · VP of People</span><p>A two-way conversation. As much for you to ask questions as for us.</p></div></div>
+<div class="step"><div class="step-num final">🎉</div><div class="step-body"><h4>Offer</h4><span class="step-meta">Fast turnaround</span><p>Expect to hear back within days of your final stage.</p></div></div>
+</div>
     </div>
   </div>
 </div>
 
-<!-- BENEFITS — full width -->
+<!-- BENEFITS -->
 <div class="benefits-section">
   <p class="panel-label">Benefits</p>
   <h2>What you get</h2>
   <div class="benefits-row">
-    <div class="benefit">
-      <span class="benefit-icon">🌍</span>
-      <h4>Remote or hybrid</h4>
-      <p>Your choice — fully remote, hybrid, or office.</p>
-    </div>
-    <div class="benefit">
-      <span class="benefit-icon">🏖️</span>
-      <h4>25 days + birthday</h4>
-      <p>Plus bank holidays. +1 day/year up to 30.</p>
-    </div>
-    <div class="benefit">
-      <span class="benefit-icon">💻</span>
-      <h4>MacBook Pro</h4>
-      <p>Plus $200 home office setup budget.</p>
-    </div>
-    <div class="benefit">
-      <span class="benefit-icon">🎓</span>
-      <h4>L&amp;D budget</h4>
-      <p>Training, courses, development.</p>
-    </div>
-    <div class="benefit">
-      <span class="benefit-icon">💪</span>
-      <h4>Wellness budget</h4>
-      <p>Fitness, mental health &amp; coaching.</p>
-    </div>
-    <div class="benefit">
-      <span class="benefit-icon">📈</span>
-      <h4>Equity options</h4>
-      <p>Share in the upside as we scale.</p>
-    </div>
-  </div>
+<div class="benefit"><span class="benefit-icon">🌍</span><h4>Remote or hybrid</h4><p>Fully remote, hybrid, whatever works for you.</p></div>
+<div class="benefit"><span class="benefit-icon">🏖️</span><h4>25 days holiday</h4><p>Plus bank holidays.</p></div>
+<div class="benefit"><span class="benefit-icon">🙌</span><h4>+1 day per year</h4><p>An extra day of leave each year, up to 30 total.</p></div>
+<div class="benefit"><span class="benefit-icon">🎂</span><h4>Birthday off</h4><p>Take the day, on us.</p></div>
+<div class="benefit"><span class="benefit-icon">🧘</span><h4>Mental health support</h4><p>Resources, wellbeing programmes, and professional coaching.</p></div>
+<div class="benefit"><span class="benefit-icon">🥶</span><h4>Family-friendly policies</h4><p>Support built around your life outside work.</p></div>
+<div class="benefit"><span class="benefit-icon">💪</span><h4>Wellness budget</h4><p>Fitness and wellness costs covered.</p></div>
+<div class="benefit"><span class="benefit-icon">💻</span><h4>MacBook Pro</h4><p>Plus a $200 home office setup budget.</p></div>
+<div class="benefit"><span class="benefit-icon">🎓</span><h4>L&amp;D budget</h4><p>Training and development, on us.</p></div>
+</div>
   <div class="benefits-split">
-    <div class="benefits-col">
-      <div class="benefits-col-header"><span class="flag">🇬🇧</span> UK-based employees</div>
-      <div class="col-benefit">
-        <span class="col-benefit-icon">🏦</span>
-        <div class="col-benefit-text"><h4>4% pension</h4><p>Via Smart Pension</p></div>
-      </div>
-      <div class="col-benefit">
-        <span class="col-benefit-icon">🏥</span>
-        <div class="col-benefit-text"><h4>Private medical</h4><p>Via Allianz</p></div>
-      </div>
-      <div class="col-benefit">
-        <span class="col-benefit-icon">🦷</span>
-        <div class="col-benefit-text"><h4>Private dental</h4><p>Via Allianz</p></div>
-      </div>
-    </div>
-    <div class="benefits-col">
-      <div class="benefits-col-header"><span class="flag">🇺🇸</span> US-based employees</div>
-      <div class="col-benefit">
-        <span class="col-benefit-icon">🏦</span>
-        <div class="col-benefit-text"><h4>4% 401K match</h4><p>Employer contribution match</p></div>
-      </div>
-      <div class="col-benefit">
-        <span class="col-benefit-icon">🏥</span>
-        <div class="col-benefit-text"><h4>Health insurance</h4><p>Via ICHRA</p></div>
-      </div>
-      <div class="col-benefit">
-        <span class="col-benefit-icon">🦷</span>
-        <div class="col-benefit-text"><h4>Dental &amp; vision</h4><p>Via Guardian</p></div>
-      </div>
-    </div>
-  </div>
+<div class="benefits-col"><div class="benefits-col-header"><span class="flag">🇺🇸</span> US-based employees also get...</div>
+<div class="col-benefit"><span class="col-benefit-icon">🏦</span><div class="col-benefit-text"><h4>4% 401K match</h4><p>Employer contribution match.</p></div></div>
+<div class="col-benefit"><span class="col-benefit-icon">🏥</span><div class="col-benefit-text"><h4>Health insurance</h4><p>Via ICHRA.</p></div></div>
+<div class="col-benefit"><span class="col-benefit-icon">🦷</span><div class="col-benefit-text"><h4>Dental &amp; vision</h4><p>Via Guardian.</p></div></div>
+</div>
+<div class="benefits-col"><div class="benefits-col-header"><span class="flag">🇨🇦</span> Canada-based employees also get...</div>
+<div class="col-benefit"><span class="col-benefit-icon">🏥</span><div class="col-benefit-text"><h4>Healthcare</h4><p>Via ManuLife (through Deel).</p></div></div>
+<div class="col-benefit"><span class="col-benefit-icon">🏦</span><div class="col-benefit-text"><h4>RRSP</h4><p>Via Wealthsimple (through Deel).</p></div></div>
+</div>
+</div>
 </div>
 
 <!-- CTA -->
 <div class="cta-section">
   <div class="cta-inner">
     <h2>Interested?</h2>
-    <p>If building production AI systems for institutional finance sounds like your kind of problem, reach out — I'd love to tell you more.</p>
+    <p>If digging into messy data until you find the real story sounds like your kind of problem, reach out. I'd love to tell you more.</p>
     <a href="mailto:jamie.crowley@cryptio.co" class="btn">Get in touch</a>
     <p class="cta-or">or email directly</p>
     <a href="mailto:jamie.crowley@cryptio.co" class="cta-email">jamie.crowley@cryptio.co</a>
@@ -775,18 +568,17 @@
   <p>Data transformation &amp; ERP for digital assets · <a href="https://cryptio.co" target="_blank">cryptio.co</a></p>
 </footer>
 
-<script>
 
-// ── CHART CANVAS ────────────────────────────────────────────────────────────
+<script>
+// CHART CANVAS
 const canvas = document.getElementById('chart-bg');
 const ctx    = canvas.getContext('2d');
 
-const BAR_COUNT = 72;
-const PAD_X = 0.04;
-const PAD_Y_TOP = 0.12;
-const PAD_Y_BOT = 0.08;
+const BAR_COUNT  = 72;
+const PAD_X      = 0.04;
+const PAD_Y_TOP  = 0.12;
+const PAD_Y_BOT  = 0.08;
 
-// Generate initial OHLC candles
 function makeCandles(n) {
   let price = 42000 + Math.random() * 20000;
   return Array.from({ length: n }, () => {
@@ -803,22 +595,14 @@ function makeCandles(n) {
 
 let candles = makeCandles(BAR_COUNT);
 
-function resize() {
-  canvas.width  = canvas.offsetWidth  * window.devicePixelRatio;
-  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-}
-
 function drawChart() {
   const W = canvas.offsetWidth;
   const H = canvas.offsetHeight;
   canvas.width  = W * window.devicePixelRatio;
   canvas.height = H * window.devicePixelRatio;
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
   ctx.clearRect(0, 0, W, H);
 
-  // Subtle grid lines
   ctx.strokeStyle = 'rgba(255,255,255,0.04)';
   ctx.lineWidth = 0.5;
   for (let r = 0; r <= 5; r++) {
@@ -831,18 +615,17 @@ function drawChart() {
   }
 
   const prices = candles.flatMap(c => [c.high, c.low]);
-  const minP = Math.min(...prices);
-  const maxP = Math.max(...prices);
-  const range = maxP - minP || 1;
+  const minP   = Math.min(...prices);
+  const maxP   = Math.max(...prices);
+  const range  = maxP - minP || 1;
 
   const chartW = W * (1 - PAD_X * 2);
   const chartH = H * (1 - PAD_Y_TOP - PAD_Y_BOT);
   const xStart = W * PAD_X;
   const yStart = H * PAD_Y_TOP;
-
-  const toY  = v => yStart + chartH - ((v - minP) / range) * chartH;
-  const barW = chartW / BAR_COUNT;
-  const bodyW = Math.max(2, barW * 0.62);
+  const toY    = v => yStart + chartH - ((v - minP) / range) * chartH;
+  const barW   = chartW / BAR_COUNT;
+  const bodyW  = Math.max(2, barW * 0.62);
 
   candles.forEach((c, i) => {
     const up  = c.close >= c.open;
@@ -852,34 +635,25 @@ function drawChart() {
     const bot = toY(Math.min(c.open, c.close));
     const bh  = Math.max(1.5, bot - top);
 
-    // Body fill
-    ctx.fillStyle = up ? 'rgba(46,232,154,0.55)' : 'rgba(255,80,80,0.50)';
+    ctx.fillStyle   = up ? 'rgba(46,232,154,0.55)' : 'rgba(255,80,80,0.50)';
     ctx.fillRect(bx, top, bodyW, bh);
-
-    // Body border
     ctx.strokeStyle = up ? 'rgba(46,232,154,0.9)' : 'rgba(255,80,80,0.85)';
-    ctx.lineWidth = 0.8;
+    ctx.lineWidth   = 0.8;
     ctx.strokeRect(bx, top, bodyW, bh);
-
-    // Wick
     ctx.strokeStyle = up ? 'rgba(46,232,154,0.7)' : 'rgba(255,80,80,0.65)';
-    ctx.lineWidth = 1;
+    ctx.lineWidth   = 1;
     ctx.beginPath();
-    ctx.moveTo(x, toY(c.high));
-    ctx.lineTo(x, top);
-    ctx.moveTo(x, bot);
-    ctx.lineTo(x, toY(c.low));
+    ctx.moveTo(x, toY(c.high)); ctx.lineTo(x, top);
+    ctx.moveTo(x, bot);         ctx.lineTo(x, toY(c.low));
     ctx.stroke();
   });
 
-  // Fade left edge so it feels infinite
   const fade = ctx.createLinearGradient(0, 0, W * 0.08, 0);
   fade.addColorStop(0, 'rgba(10,10,10,1)');
   fade.addColorStop(1, 'rgba(10,10,10,0)');
   ctx.fillStyle = fade;
   ctx.fillRect(0, 0, W * 0.08, H);
 
-  // Fade right edge (live candle arriving)
   const fadeR = ctx.createLinearGradient(W * 0.92, 0, W, 0);
   fadeR.addColorStop(0, 'rgba(10,10,10,0)');
   fadeR.addColorStop(1, 'rgba(10,10,10,0.7)');
@@ -887,51 +661,45 @@ function drawChart() {
   ctx.fillRect(W * 0.92, 0, W * 0.08, H);
 }
 
-// Animate — shift candles left, add new one on right
 function advanceCandles() {
-  const last   = candles[candles.length - 1];
-  const move   = (Math.random() - 0.48) * last.close * 0.018;
-  const open   = last.close;
-  const close  = open + move;
-  const wick   = last.close * 0.010 * Math.random();
-  const high   = Math.max(open, close) + wick;
-  const low    = Math.min(open, close) - wick;
+  const last  = candles[candles.length - 1];
+  const move  = (Math.random() - 0.48) * last.close * 0.018;
+  const open  = last.close;
+  const close = open + move;
+  const wick  = last.close * 0.010 * Math.random();
+  const high  = Math.max(open, close) + wick;
+  const low   = Math.min(open, close) - wick;
   candles.push({ open, close, high, low });
   candles.shift();
 }
 
 let lastTime = 0;
 function loop(ts) {
-  if (ts - lastTime > 600) {
-    advanceCandles();
-    lastTime = ts;
-  }
+  if (ts - lastTime > 600) { advanceCandles(); lastTime = ts; }
   drawChart();
   requestAnimationFrame(loop);
 }
-
 requestAnimationFrame(loop);
 window.addEventListener('resize', drawChart);
 
-
-// ── FLOATING TRADE CARDS ─────────────────────────────────────────────────────
+// FLOATING TRADE CARDS
 const tradePairs = ['BTC/USD','ETH/USD','SOL/USD','ARB/ETH','UNI/USDC','LINK/USD','AVAX/USD','MATIC/USDC'];
-const tradeFeed  = document.getElementById('trade-feed');
+const tradeFeed  = document.getElementById('hero-float');
 const MAX_CARDS  = 4;
 
 function randomTrade() {
-  const pair = tradePairs[Math.floor(Math.random() * tradePairs.length)];
-  const side = Math.random() > 0.5 ? 'BUY' : 'SELL';
-  const qty  = (Math.random() * 9.8 + 0.2).toFixed(4);
-  const px   = (Math.random() * 60000 + 500).toFixed(2);
+  const pair     = tradePairs[Math.floor(Math.random() * tradePairs.length)];
+  const side     = Math.random() > 0.5 ? 'BUY' : 'SELL';
+  const qty      = (Math.random() * 9.8 + 0.2).toFixed(4);
+  const px       = (Math.random() * 60000 + 500).toFixed(2);
   const notional = (parseFloat(qty) * parseFloat(px)).toLocaleString('en-US', { maximumFractionDigits: 2 });
   return { pair, side, qty, px, notional };
 }
 
 function addTradeCard() {
-  const t = randomTrade();
+  const t    = randomTrade();
   const card = document.createElement('div');
-  card.className = 'trade-card';
+  card.className = 'float-card';
   card.innerHTML = `
     <div class="trade-card-header">
       <span class="trade-pair">${t.pair}</span>
@@ -940,16 +708,9 @@ function addTradeCard() {
     <div class="trade-row"><span>Qty</span><span class="trade-val">${t.qty}</span></div>
     <div class="trade-row"><span>Price</span><span class="trade-val">$${t.px}</span></div>
     <div class="trade-row"><span>Value</span><span class="trade-val">$${t.notional}</span></div>`;
-
   tradeFeed.prepend(card);
-
-  // Fade in
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => card.classList.add('visible'));
-  });
-
-  // Remove oldest if overflow
-  const cards = tradeFeed.querySelectorAll('.trade-card');
+  requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('visible')));
+  const cards = tradeFeed.querySelectorAll('.float-card');
   if (cards.length > MAX_CARDS) {
     const old = cards[cards.length - 1];
     old.classList.remove('visible');
@@ -957,26 +718,22 @@ function addTradeCard() {
   }
 }
 
-// Stagger initial cards
 setTimeout(() => addTradeCard(), 600);
 setTimeout(() => addTradeCard(), 1200);
 setTimeout(() => addTradeCard(), 1800);
-
-// Then keep adding
 setInterval(addTradeCard, 2400);
 </script>
 
+
 <script>
-  // Personalisation — reads ?name=Alex from URL
+  // Personalisation: reads ?name=Alex from URL
   (function() {
     const params = new URLSearchParams(window.location.search);
-    const name = params.get('name');
+    const name   = params.get('name');
     if (name) {
-      const bar = document.getElementById('hello-bar');
-      const text = document.getElementById('hello-text');
       const safe = name.charAt(0).toUpperCase() + name.slice(1);
-      text.innerHTML = 'Hey <strong>' + safe + '</strong> — Jamie put this together specially for you.';
-      bar.style.display = 'block';
+      const h1   = document.getElementById('hero-headline');
+      if (h1) h1.innerHTML = '<em>' + safe + '</em>, could you be our next Delivery Operations Analyst at Cryptio?';
     }
   })();
 </script>
